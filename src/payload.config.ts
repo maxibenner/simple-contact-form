@@ -1,4 +1,3 @@
-// storage-adapter-import-placeholder
 import { mongooseAdapter } from '@payloadcms/db-mongodb'
 import { payloadCloudPlugin } from '@payloadcms/payload-cloud'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
@@ -6,9 +5,15 @@ import path from 'path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
 import sharp from 'sharp'
+import { resendAdapter } from '@payloadcms/email-resend'
 
 import { Users } from './collections/Users'
-import { Media } from './collections/Media'
+import { AppUsers } from './collections/AppUsers'
+import { Teams } from './collections/Teams'
+import { Recipients } from './collections/Recipients'
+import { Forms } from './collections/Forms'
+import { Invites } from './collections/Invites'
+import { PaymentMethods } from './collections/PaymentMethods'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -20,7 +25,7 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media],
+  collections: [Users, AppUsers, Teams, Recipients, Forms, Invites, PaymentMethods],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
@@ -30,8 +35,10 @@ export default buildConfig({
     url: process.env.DATABASE_URI || '',
   }),
   sharp,
-  plugins: [
-    payloadCloudPlugin(),
-    // storage-adapter-placeholder
-  ],
+  plugins: [payloadCloudPlugin()],
+  email: resendAdapter({
+    defaultFromAddress: 'noreply@simplecontactform.org',
+    defaultFromName: 'Simple Contact Form',
+    apiKey: process.env.RESEND_API_KEY || '',
+  }),
 })

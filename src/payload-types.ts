@@ -6,26 +6,138 @@
  * and re-run `payload generate:types` to regenerate this file.
  */
 
+/**
+ * Supported timezones in IANA format.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "supportedTimezones".
+ */
+export type SupportedTimezones =
+  | 'Pacific/Midway'
+  | 'Pacific/Niue'
+  | 'Pacific/Honolulu'
+  | 'Pacific/Rarotonga'
+  | 'America/Anchorage'
+  | 'Pacific/Gambier'
+  | 'America/Los_Angeles'
+  | 'America/Tijuana'
+  | 'America/Denver'
+  | 'America/Phoenix'
+  | 'America/Chicago'
+  | 'America/Guatemala'
+  | 'America/New_York'
+  | 'America/Bogota'
+  | 'America/Caracas'
+  | 'America/Santiago'
+  | 'America/Buenos_Aires'
+  | 'America/Sao_Paulo'
+  | 'Atlantic/South_Georgia'
+  | 'Atlantic/Azores'
+  | 'Atlantic/Cape_Verde'
+  | 'Europe/London'
+  | 'Europe/Berlin'
+  | 'Africa/Lagos'
+  | 'Europe/Athens'
+  | 'Africa/Cairo'
+  | 'Europe/Moscow'
+  | 'Asia/Riyadh'
+  | 'Asia/Dubai'
+  | 'Asia/Baku'
+  | 'Asia/Karachi'
+  | 'Asia/Tashkent'
+  | 'Asia/Calcutta'
+  | 'Asia/Dhaka'
+  | 'Asia/Almaty'
+  | 'Asia/Jakarta'
+  | 'Asia/Bangkok'
+  | 'Asia/Shanghai'
+  | 'Asia/Singapore'
+  | 'Asia/Tokyo'
+  | 'Asia/Seoul'
+  | 'Australia/Brisbane'
+  | 'Australia/Sydney'
+  | 'Pacific/Guam'
+  | 'Pacific/Noumea'
+  | 'Pacific/Auckland'
+  | 'Pacific/Fiji';
+
 export interface Config {
   auth: {
     users: UserAuthOperations;
+    'app-users': AppUserAuthOperations;
   };
+  blocks: {};
   collections: {
     users: User;
-    media: Media;
+    'app-users': AppUser;
+    teams: Team;
+    recipients: Recipient;
+    forms: Form;
+    invites: Invite;
+    'payment-methods': PaymentMethod;
+    'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
+  };
+  collectionsJoins: {
+    'app-users': {
+      'owned-teams': 'teams';
+      'member-teams': 'teams';
+    };
+    teams: {
+      forms: 'forms';
+      paymentMethod: 'payment-methods';
+    };
+  };
+  collectionsSelect: {
+    users: UsersSelect<false> | UsersSelect<true>;
+    'app-users': AppUsersSelect<false> | AppUsersSelect<true>;
+    teams: TeamsSelect<false> | TeamsSelect<true>;
+    recipients: RecipientsSelect<false> | RecipientsSelect<true>;
+    forms: FormsSelect<false> | FormsSelect<true>;
+    invites: InvitesSelect<false> | InvitesSelect<true>;
+    'payment-methods': PaymentMethodsSelect<false> | PaymentMethodsSelect<true>;
+    'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
+    'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
+    'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
   };
   db: {
     defaultIDType: string;
   };
   globals: {};
+  globalsSelect: {};
   locale: null;
-  user: User & {
-    collection: 'users';
+  user:
+    | (User & {
+        collection: 'users';
+      })
+    | (AppUser & {
+        collection: 'app-users';
+      });
+  jobs: {
+    tasks: unknown;
+    workflows: unknown;
   };
 }
 export interface UserAuthOperations {
+  forgotPassword: {
+    email: string;
+    password: string;
+  };
+  login: {
+    email: string;
+    password: string;
+  };
+  registerFirstUser: {
+    email: string;
+    password: string;
+  };
+  unlock: {
+    email: string;
+    password: string;
+  };
+}
+export interface AppUserAuthOperations {
   forgotPassword: {
     email: string;
     password: string;
@@ -62,22 +174,170 @@ export interface User {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media".
+ * via the `definition` "app-users".
  */
-export interface Media {
+export interface AppUser {
   id: string;
-  alt: string;
+  'default-team'?: (string | null) | Team;
+  'owned-teams'?: {
+    docs?: (string | Team)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  'member-teams'?: {
+    docs?: (string | Team)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  stripeCustomerId?: string | null;
   updatedAt: string;
   createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  _verified?: boolean | null;
+  _verificationToken?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  password?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "teams".
+ */
+export interface Team {
+  id: string;
+  name: string;
+  members?: (string | AppUser)[] | null;
+  owners?: (string | AppUser)[] | null;
+  /**
+   * Current balance in cents
+   */
+  balance?: number | null;
+  /**
+   * Automatically adds $5 when the balance falls below 25 cents.
+   */
+  autoRecharge?: boolean | null;
+  forms?: {
+    docs?: (string | Form)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  paymentMethod?: {
+    docs?: (string | PaymentMethod)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "forms".
+ */
+export interface Form {
+  id: string;
+  name: string;
+  team: string | Team;
+  recipients?: (string | Recipient)[] | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "recipients".
+ */
+export interface Recipient {
+  id: string;
+  email: string;
+  verified: boolean;
+  team: string | Team;
+  verificationToken?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payment-methods".
+ */
+export interface PaymentMethod {
+  id: string;
+  cardBrand: string;
+  lastFour: string;
+  expiryMonth: number;
+  expiryYear: number;
+  status: 'active' | 'inactive';
+  owner: string | AppUser;
+  stripePaymentMethodId: string;
+  stripeCustomerId: string;
+  stripeFingerprint: string;
+  team: string | Team;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "invites".
+ */
+export interface Invite {
+  id: string;
+  email: string;
+  team: string | Team;
+  'team-name': string;
+  role: 'owner' | 'member';
+  verificationToken?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-locked-documents".
+ */
+export interface PayloadLockedDocument {
+  id: string;
+  document?:
+    | ({
+        relationTo: 'users';
+        value: string | User;
+      } | null)
+    | ({
+        relationTo: 'app-users';
+        value: string | AppUser;
+      } | null)
+    | ({
+        relationTo: 'teams';
+        value: string | Team;
+      } | null)
+    | ({
+        relationTo: 'recipients';
+        value: string | Recipient;
+      } | null)
+    | ({
+        relationTo: 'forms';
+        value: string | Form;
+      } | null)
+    | ({
+        relationTo: 'invites';
+        value: string | Invite;
+      } | null)
+    | ({
+        relationTo: 'payment-methods';
+        value: string | PaymentMethod;
+      } | null);
+  globalSlug?: string | null;
+  user:
+    | {
+        relationTo: 'users';
+        value: string | User;
+      }
+    | {
+        relationTo: 'app-users';
+        value: string | AppUser;
+      };
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -85,10 +345,15 @@ export interface Media {
  */
 export interface PayloadPreference {
   id: string;
-  user: {
-    relationTo: 'users';
-    value: string | User;
-  };
+  user:
+    | {
+        relationTo: 'users';
+        value: string | User;
+      }
+    | {
+        relationTo: 'app-users';
+        value: string | AppUser;
+      };
   key?: string | null;
   value?:
     | {
@@ -112,6 +377,143 @@ export interface PayloadMigration {
   batch?: number | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "users_select".
+ */
+export interface UsersSelect<T extends boolean = true> {
+  updatedAt?: T;
+  createdAt?: T;
+  email?: T;
+  resetPasswordToken?: T;
+  resetPasswordExpiration?: T;
+  salt?: T;
+  hash?: T;
+  loginAttempts?: T;
+  lockUntil?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "app-users_select".
+ */
+export interface AppUsersSelect<T extends boolean = true> {
+  'default-team'?: T;
+  'owned-teams'?: T;
+  'member-teams'?: T;
+  stripeCustomerId?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  email?: T;
+  resetPasswordToken?: T;
+  resetPasswordExpiration?: T;
+  salt?: T;
+  hash?: T;
+  _verified?: T;
+  _verificationToken?: T;
+  loginAttempts?: T;
+  lockUntil?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "teams_select".
+ */
+export interface TeamsSelect<T extends boolean = true> {
+  name?: T;
+  members?: T;
+  owners?: T;
+  balance?: T;
+  autoRecharge?: T;
+  forms?: T;
+  paymentMethod?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "recipients_select".
+ */
+export interface RecipientsSelect<T extends boolean = true> {
+  email?: T;
+  verified?: T;
+  team?: T;
+  verificationToken?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "forms_select".
+ */
+export interface FormsSelect<T extends boolean = true> {
+  name?: T;
+  team?: T;
+  recipients?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "invites_select".
+ */
+export interface InvitesSelect<T extends boolean = true> {
+  email?: T;
+  team?: T;
+  'team-name'?: T;
+  role?: T;
+  verificationToken?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payment-methods_select".
+ */
+export interface PaymentMethodsSelect<T extends boolean = true> {
+  cardBrand?: T;
+  lastFour?: T;
+  expiryMonth?: T;
+  expiryYear?: T;
+  status?: T;
+  owner?: T;
+  stripePaymentMethodId?: T;
+  stripeCustomerId?: T;
+  stripeFingerprint?: T;
+  team?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-locked-documents_select".
+ */
+export interface PayloadLockedDocumentsSelect<T extends boolean = true> {
+  document?: T;
+  globalSlug?: T;
+  user?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-preferences_select".
+ */
+export interface PayloadPreferencesSelect<T extends boolean = true> {
+  user?: T;
+  key?: T;
+  value?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-migrations_select".
+ */
+export interface PayloadMigrationsSelect<T extends boolean = true> {
+  name?: T;
+  batch?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
