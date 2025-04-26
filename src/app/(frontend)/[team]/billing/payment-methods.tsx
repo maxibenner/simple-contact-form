@@ -24,7 +24,7 @@ export default function PaymentMethods({ data, user }: { data: PaymentMethod[]; 
   const hasPaymentMethods = data.length > 0
 
   return (
-    <StripeElementsProvider email={user.email}>
+    <StripeElementsProvider>
       <Card>
         <CardHeader>
           <CardTitle>Saved Payment Method</CardTitle>

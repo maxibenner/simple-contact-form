@@ -8,7 +8,7 @@ import { AppUser, Invite } from '@/payload-types'
 import LeaveTeam from './leave-team'
 import DeleteTeam from './delete-team'
 
-export default async function MembersPage({ params }: { params: { team: string } }) {
+export default async function MembersPage({ params }: { params: Promise<{ team: string }> }) {
   const awaitedParams = await params
 
   const user = await getUser()

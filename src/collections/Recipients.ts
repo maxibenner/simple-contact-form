@@ -1,7 +1,6 @@
 import type { CollectionConfig, PayloadRequest } from 'payload'
-import { associatesOnly } from './utils/access'
 import { VerifiationTokenField } from './custom-fields/verification-token'
-import { Recipient } from '@/payload-types'
+import { associatesOnly } from './utils/access'
 
 export const Recipients: CollectionConfig = {
   slug: 'recipients',

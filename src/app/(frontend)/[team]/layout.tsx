@@ -7,7 +7,7 @@ import { AppDataProvider } from '@/context/app-data'
 
 export default async function Layout(props: {
   children: React.ReactNode
-  params: { team: string }
+  params: Promise<{ team: string }>
 }) {
   const { team } = await props.params
 
@@ -81,12 +81,7 @@ export default async function Layout(props: {
 
   return (
     <AppDataProvider team={currentTeam} appUser={appUser} userRole={userRole}>
-      <Dashboard
-        user={user}
-        teams={teams}
-        activeTeamId={team || teams[0].id}
-        invites={invites.docs}
-      >
+      <Dashboard teams={teams} activeTeamId={team || teams[0].id} invites={invites.docs}>
         {props.children}
       </Dashboard>
     </AppDataProvider>

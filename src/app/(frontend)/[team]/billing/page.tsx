@@ -7,7 +7,7 @@ import payload from '@/lib/payload'
 import AutoRecharge from './auto-recharge'
 import { redirect } from 'next/navigation'
 
-export default async function BillingPage({ params }: { params: { team: string } }) {
+export default async function BillingPage({ params }: { params: Promise<{ team: string }> }) {
   const { team } = await params
   const _headers = await headers()
   const host = _headers.get('x-forwarded-host')

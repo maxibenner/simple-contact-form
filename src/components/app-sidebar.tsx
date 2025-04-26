@@ -12,12 +12,12 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar'
-import { AppUser, Invite, Team } from '@/payload-types'
-import { FileText, LogOut, MailCheck, Settings, Users, Wallet } from 'lucide-react'
-import { usePathname, useRouter } from 'next/navigation'
-import { TeamSwitcher } from './team-switcher'
 import { useAppData } from '@/context/app-data'
+import { Invite, Team } from '@/payload-types'
+import { FileText, LogOut, MailCheck, Users, Wallet } from 'lucide-react'
+import { usePathname, useRouter } from 'next/navigation'
 import ElementLock from './element-lock'
+import { TeamSwitcher } from './team-switcher'
 
 // Properly extend team type
 export interface ExtendedTeam extends Team {
@@ -25,12 +25,10 @@ export interface ExtendedTeam extends Team {
 }
 
 export function AppSidebar({
-  user,
   teams,
   activeTeamId,
   invites,
 }: {
-  user: AppUser
   teams: ExtendedTeam[]
   activeTeamId: string
   invites: Invite[]

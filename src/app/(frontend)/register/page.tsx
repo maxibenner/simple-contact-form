@@ -6,12 +6,9 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
-import React, { useRef, useState } from 'react'
+import React, { Suspense, useRef, useState } from 'react'
 
 export default function LoginPage() {
-  const searchParams = useSearchParams()
-  const email = searchParams.get('email')
-
   const router = useRouter()
   const formRef = useRef(null)
   const [loading, setLoading] = useState(false)
@@ -60,16 +57,10 @@ export default function LoginPage() {
     <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
       <div className="w-full max-w-sm">
         <div className="flex flex-col gap-6">
-          {email && (
-            <Card className="bg-blue-500 text-white">
-              <CardHeader>
-                <CardTitle className="text-2xl">New invite</CardTitle>
-                <CardDescription className="text-white">
-                  Log in using <strong>{email}</strong> to accept or decline your team invite.
-                </CardDescription>
-              </CardHeader>
-            </Card>
-          )}
+          <Suspense>
+            <NewInviteCard />
+          </Suspense>
+
           <Card>
             <CardHeader>
               <CardTitle className="text-2xl">Create Account</CardTitle>
@@ -81,7 +72,6 @@ export default function LoginPage() {
                   <div className="grid gap-2">
                     <Label htmlFor="email">Email</Label>
                     <Input
-                      defaultValue={email || ''}
                       onChange={() => setError(undefined)}
                       name="email"
                       type="email"
@@ -124,5 +114,23 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+function NewInviteCard() {
+  const searchParams = useSearchParams()
+  const email = searchParams.get('email')
+
+  if (!email) return null
+
+  return (
+    <Card className="bg-blue-500 text-white">
+      <CardHeader>
+        <CardTitle className="text-2xl">New invite</CardTitle>
+        <CardDescription className="text-white">
+          Log in using <strong>{email}</strong> to accept or decline your team invite.
+        </CardDescription>
+      </CardHeader>
+    </Card>
   )
 }

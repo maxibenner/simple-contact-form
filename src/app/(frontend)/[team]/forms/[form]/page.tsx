@@ -6,7 +6,11 @@ import { formatDate } from '@/lib/utils'
 import { getUser } from '@/lib/utils-server'
 import { redirect } from 'next/navigation'
 
-export default async function FormPage({ params }: { params: { team: string; form: string } }) {
+export default async function FormPage({
+  params,
+}: {
+  params: Promise<{ team: string; form: string }>
+}) {
   const awaitedParams = await params
 
   const user = await getUser()

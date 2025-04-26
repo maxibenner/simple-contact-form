@@ -3,7 +3,7 @@ import React from 'react'
 
 export default async function Layout(props: {
   children: React.ReactNode
-  params: { team: string; form: string }
+  params: Promise<{ team: string; form: string }>
 }) {
   return (
     <>
