@@ -76,7 +76,10 @@ export default function PaymentMethods({ data, user }: { data: PaymentMethod[]; 
                 <DialogTitle>
                   {hasPaymentMethods ? 'Update payment method' : 'Add payment method'}
                 </DialogTitle>
-                <DialogDescription>Please enter your card information.</DialogDescription>
+                <DialogDescription>
+                  Add a payment method for future payments or to automatically recharge your
+                  balance.
+                </DialogDescription>
               </DialogHeader>
               <PaymentMethodForm
                 user={user}
