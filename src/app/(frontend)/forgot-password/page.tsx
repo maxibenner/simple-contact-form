@@ -6,12 +6,11 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
-import React, { Suspense, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
+import { toast } from 'sonner'
+import { set } from 'zod'
 
-export default function LoginPage() {
-  // const searchParams = useSearchParams()
-  // const email = searchParams.get('email')
-
+export default function ForgotPasswordPage() {
   const router = useRouter()
   const formRef = useRef(null)
   const [loading, setLoading] = useState(false)
@@ -27,48 +26,41 @@ export default function LoginPage() {
 
     // Create FormData from the form element.
     const formData = new FormData(formRef.current)
+    const email = formData.get('email')
 
-    try {
-      // Submit the form data using the fetch API.
-      // Note: When using FormData, content type is automatically set
-      const response = await fetch('/api/login', {
-        method: 'POST',
-        body: formData,
-      })
+    const res = await fetch(`${process.env.NEXT_PUBLIC_HOST_URL}/api/app-users/forgot-password`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email,
+      }),
+    })
 
-      // Check if the response status indicates success
-      if (!response.ok) {
-        // Log error messages if response is not ok
-        const data = await response.json()
-        setError(data.error)
-        setLoading(false)
-        return
-      }
-
-      // Parse the JSON response from the server
-      const data = await response.json()
-
-      // Redirect to the forms page on successful registration
-      router.push(data.redirect)
-    } catch (error) {
-      // Catch any network or unexpected errors
-      console.error('Fetch error:', error)
+    // Check if the response status indicates success
+    if (!res.ok) {
+      // Log error messages if response is not ok
+      const data = await res.json()
+      setError(data.error)
       setLoading(false)
+      return
     }
+
+    setLoading(false)
+    toast.success('Check your email for the reset password link')
   }
 
   return (
     <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
       <div className="w-full max-w-sm">
         <div className="flex flex-col gap-6">
-          <Suspense>
-            <NewInviteCard />
-          </Suspense>
-
           <Card>
             <CardHeader>
-              <CardTitle className="text-2xl">Login</CardTitle>
-              <CardDescription>Enter your email below to login to your account</CardDescription>
+              <CardTitle className="text-2xl">Reset password</CardTitle>
+              <CardDescription>
+                Enter your email address and we will send you a link to reset your password.
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <form ref={formRef} onSubmit={handleSubmit}>
@@ -82,31 +74,13 @@ export default function LoginPage() {
                       </Label>
                     )}
                   </div>
-                  <div className="grid gap-2">
-                    <div className="flex items-center">
-                      <Label htmlFor="password">Password</Label>
-                      <Link
-                        href="/forgot-password"
-                        className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                      >
-                        Forgot your password?
-                      </Link>
-                    </div>
-                    <Input name="password" type="password" required />
-                    {error?.password && (
-                      <Label htmlFor="password" className="text-red-400 font-normal">
-                        {error.password.join(', ')}
-                      </Label>
-                    )}
-                  </div>
                   <SubmitButton loading={loading} className="mt-4 w-full">
-                    Login
+                    Send reset link
                   </SubmitButton>
                 </div>
                 <div className="mt-4 text-center text-sm">
-                  Don&apos;t have an account?{' '}
-                  <Link href="/register" className="underline underline-offset-4">
-                    Sign up
+                  <Link href="/login" className="underline underline-offset-4">
+                    Back to login
                   </Link>
                 </div>
               </form>
