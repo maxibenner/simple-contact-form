@@ -4,6 +4,7 @@ import TableGridRecipients, { Form } from '@/components/table-grid-recipients'
 import payload from '@/lib/payload'
 import { getUser } from '@/lib/utils-server'
 import { redirect } from 'next/navigation'
+import { wait } from '@/lib/utils'
 
 export default async function FormsPage({ params }: { params: Promise<{ team: string }> }) {
   const awaitedParams = await params
@@ -34,11 +35,8 @@ export default async function FormsPage({ params }: { params: Promise<{ team: st
 
   return (
     <>
-      <HeaderPage title="Recipients" />
-      <div className="p-4 lg:px-6">
-        <TableHeaderRecipients />
-        <TableGridRecipients data={data} />
-      </div>
+      <TableHeaderRecipients />
+      <TableGridRecipients data={data} />
     </>
   )
 }

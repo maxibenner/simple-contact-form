@@ -6,6 +6,7 @@ import { headers } from 'next/headers'
 import payload from '@/lib/payload'
 import AutoRecharge from './auto-recharge'
 import { redirect } from 'next/navigation'
+import { wait } from '@/lib/utils'
 
 export default async function BillingPage({ params }: { params: Promise<{ team: string }> }) {
   const { team } = await params
@@ -52,22 +53,19 @@ export default async function BillingPage({ params }: { params: Promise<{ team: 
 
   return (
     <>
-      <HeaderPage title="Billing" description="Manage your credits and payment methods" />
-      <div className="p-4 lg:px-6 flex flex-col gap-8">
-        <div className="flex flex-col gap-4">
-          <CreditBalance amount={balance ? balance : 0} />
-          <CreditTopUp
-            host={host}
-            protocol={protocol}
-            user={authResult.user}
-            paymentMethods={paymentMethod.docs}
-          />
-          <AutoRecharge
-            autoRecharge={autoRecharge || false}
-            teamId={team}
-            paymentMethods={paymentMethod.docs}
-          />
-        </div>
+      <div className="flex flex-col gap-4">
+        <CreditBalance amount={balance ? balance : 0} />
+        <CreditTopUp
+          host={host}
+          protocol={protocol}
+          user={authResult.user}
+          paymentMethods={paymentMethod.docs}
+        />
+        <AutoRecharge
+          autoRecharge={autoRecharge || false}
+          teamId={team}
+          paymentMethods={paymentMethod.docs}
+        />
         <PaymentMethods data={paymentMethod.docs} user={authResult.user} />
       </div>
     </>

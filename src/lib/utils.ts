@@ -39,3 +39,15 @@ export function formatDate(timestamp: string): string {
   }
   return date.toLocaleDateString('en-US', options)
 }
+
+/**
+ * A promise that will resolve after a predefined amount of time
+ * @param time A timeout in milliseconds
+ */
+export async function wait(time: number) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve('Done waiting')
+    }, time)
+  })
+}
