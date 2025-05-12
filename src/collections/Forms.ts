@@ -25,6 +25,11 @@ export const Forms: CollectionConfig = {
       relationTo: 'recipients',
       hasMany: true,
     },
+    {
+      name: 'id',
+      type: 'text',
+      unique: true,
+    },
   ],
   access: {
     create: associatesOnly,
