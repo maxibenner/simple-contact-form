@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { associatesOnly, ownersOnly } from './utils/access'
+import { v4 as uuidv4 } from 'uuid'
 
 export const Forms: CollectionConfig = {
   slug: 'forms',
@@ -29,6 +30,15 @@ export const Forms: CollectionConfig = {
       name: 'id',
       type: 'text',
       unique: true,
+      // Auto generate if not provided
+      hooks: {
+        beforeValidate: [
+          async ({ value }) => {
+            if (!value) return uuidv4()
+            return value
+          },
+        ],
+      },
     },
   ],
   access: {
