@@ -9,7 +9,7 @@ import {
 import isSpam from '@/functions/spam'
 import payload from '@/lib/payload'
 import { Recipient } from '@/payload-types'
-import { NextRequest } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 
 const honeypots = ['are_you_human']
 
@@ -18,6 +18,19 @@ export async function POST(
   { params }: { params: Promise<{ form_id: string }> },
 ) {
   const awaitedParams = await params
+
+  // CORS headers
+  const corsHeaders = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    // 'Access-Control-Allow-Headers': 'Content-Type',
+  }
+
+  // Handle preflight OPTIONS request
+  if (request.method === 'OPTIONS') {
+    return new NextResponse(null, { status: 204, headers: corsHeaders })
+  }
+
   const host = request.headers.get('host')
   const protocol = request.headers.get('x-forwarded-proto') || 'http'
   const origin = request.headers.get('origin')
@@ -167,9 +180,11 @@ export async function POST(
   //   dynamicTemplateData: { fields: finalFields },
   // })
 
-  return successResponse(
-    isHtmlForm,
-    redirect,
-    `Triggered email submission(s). [${/*mailRes[0].statusCode*/ 202}]`,
-  )
+  // Example of adding CORS headers to a response
+  const response = successResponse(isHtmlForm, redirect, 'Form submitted.')
+  Object.entries(corsHeaders).forEach(([key, value]) => {
+    response.headers.set(key, value)
+  })
+
+  return response
 }
