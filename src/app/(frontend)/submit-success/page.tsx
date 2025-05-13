@@ -1,11 +1,12 @@
 import Link from 'next/link'
 
-export default function SubmitSuccess({
+export default async function SubmitSuccess({
   searchParams,
 }: {
-  searchParams?: { [key: string]: string | undefined }
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }) {
-  const returnUrl = searchParams?.return_url
+  const params = await searchParams
+  const returnUrl = params.return_url as string
 
   return (
     <div className="min-h-screen flex justify-center items-center">
