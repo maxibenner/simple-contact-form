@@ -33,8 +33,10 @@ export const Forms: CollectionConfig = {
       // Auto generate if not provided
       hooks: {
         beforeValidate: [
-          async ({ value }) => {
-            if (!value) return uuidv4()
+          async ({ value, operation }) => {
+            if (operation === 'create') {
+              if (!value) return uuidv4()
+            }
             return value
           },
         ],
