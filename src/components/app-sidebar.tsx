@@ -55,6 +55,7 @@ export function AppSidebar({
       await fetch(`${process.env.NEXT_PUBLIC_HOST_URL}/api/app-users/logout`, {
         method: 'POST',
         credentials: 'include',
+        mode: 'no-cors',
         headers: {
           'Content-Type': 'application/json',
         },
