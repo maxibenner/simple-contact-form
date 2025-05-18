@@ -4,6 +4,7 @@ import { headers as NextHeaders } from 'next/headers'
 import payload from '@/lib/payload'
 import { ExtendedTeam } from '@/components/app-sidebar'
 import { AppDataProvider } from '@/context/app-data'
+import { redirect } from 'next/navigation'
 
 export default async function Layout(props: {
   children: React.ReactNode
@@ -15,7 +16,7 @@ export default async function Layout(props: {
   const headers = await NextHeaders()
   const authResult = await payload.auth({ headers })
   const user = authResult.user
-  if (user?.collection !== 'app-users') return null
+  if (user?.collection !== 'app-users') redirect('/login')
 
   // Get users teams
   const { docs } = await payload.find({
