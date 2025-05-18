@@ -1,5 +1,4 @@
 import TableHeaderMembers from '@/components/table-header-members'
-import { HeaderPage } from '@/components/header-page'
 import TableGridMembers, { Form } from '@/components/table-grid-members'
 import payload from '@/lib/payload'
 import { getUser } from '@/lib/utils-server'
@@ -7,7 +6,6 @@ import { notFound, redirect } from 'next/navigation'
 import { AppUser, Invite } from '@/payload-types'
 import LeaveTeam from './leave-team'
 import DeleteTeam from './delete-team'
-import { wait } from '@/lib/utils'
 
 export default async function MembersPage({ params }: { params: Promise<{ team: string }> }) {
   const awaitedParams = await params

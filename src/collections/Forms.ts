@@ -1,6 +1,5 @@
 import type { CollectionConfig } from 'payload'
 import { associatesOnly, ownersOnly } from './utils/access'
-import { v4 as uuidv4 } from 'uuid'
 import { generateId } from '@/lib/utils'
 
 export const Forms: CollectionConfig = {

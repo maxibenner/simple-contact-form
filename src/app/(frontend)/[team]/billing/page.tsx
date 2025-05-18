@@ -1,4 +1,3 @@
-import { HeaderPage } from '@/components/header-page'
 import CreditBalance from './credit-balance'
 import PaymentMethods from './payment-methods'
 import CreditTopUp from './credit-top-up'
@@ -6,7 +5,6 @@ import { headers } from 'next/headers'
 import payload from '@/lib/payload'
 import AutoRecharge from './auto-recharge'
 import { redirect } from 'next/navigation'
-import { wait } from '@/lib/utils'
 
 export default async function BillingPage({ params }: { params: Promise<{ team: string }> }) {
   const { team } = await params

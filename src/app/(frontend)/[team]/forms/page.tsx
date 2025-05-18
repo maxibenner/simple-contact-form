@@ -4,7 +4,6 @@ import payload from '@/lib/payload'
 import { getUser } from '@/lib/utils-server'
 import { ColumnDef } from '@tanstack/react-table'
 import { redirect } from 'next/navigation'
-import { wait } from '@/lib/utils'
 
 const columns: ColumnDef<Form>[] = [
   {

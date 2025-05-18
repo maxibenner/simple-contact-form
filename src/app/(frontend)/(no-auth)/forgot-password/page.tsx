@@ -5,13 +5,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import Link from 'next/link'
-import { useRouter, useSearchParams } from 'next/navigation'
 import React, { useRef, useState } from 'react'
 import { toast } from 'sonner'
-import { set } from 'zod'
 
 export default function ForgotPasswordPage() {
-  const router = useRouter()
   const formRef = useRef(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<Record<'email' | 'password', string[]>>()
@@ -89,23 +86,5 @@ export default function ForgotPasswordPage() {
         </div>
       </div>
     </div>
-  )
-}
-
-function NewInviteCard() {
-  const searchParams = useSearchParams()
-  const email = searchParams.get('email')
-
-  if (!email) return null
-
-  return (
-    <Card className="bg-blue-500 text-white">
-      <CardHeader>
-        <CardTitle className="text-2xl">New invite</CardTitle>
-        <CardDescription className="text-white">
-          Create an account using <strong>{email}</strong> to accept or decline your team invite.
-        </CardDescription>
-      </CardHeader>
-    </Card>
   )
 }

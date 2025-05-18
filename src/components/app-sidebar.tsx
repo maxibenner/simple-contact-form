@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/sidebar'
 import { useAppData } from '@/context/app-data'
 import { Invite, Team } from '@/payload-types'
-import { FileText, LogOut, LucideProps, MailCheck, Users, Wallet } from 'lucide-react'
+import { LogOut, LucideProps } from 'lucide-react'
 import { usePathname, useRouter } from 'next/navigation'
 import ElementLock from './element-lock'
 import { TeamSwitcher } from './team-switcher'
