@@ -14,12 +14,12 @@ export default async function HomePage() {
   return (
     <div>
       <section className="min-h-[85vh] flex flex-col items-center justify-center py-24 px-6 gap-6">
-        <div className="relative flex flex-col items-center gap-2">
+        <div className="relative flex flex-col items-center gap-8">
           <a
             href="https://github.com/maxibenner/simple-contact-form"
             target="_blank"
             rel="noopener noreferrer"
-            className="bg-gray-900 text-white text-xs px-3 py-1 rounded-full flex items-center gap-1 hover:bg-gray-700 transition"
+            className="text-xs px-3 py-1 rounded-full flex items-center gap-1 border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50"
             style={{ textDecoration: 'none' }}
             aria-label="View source on GitHub"
           >
