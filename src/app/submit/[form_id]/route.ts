@@ -181,7 +181,7 @@ export async function POST(
   // })
 
   // Example of adding CORS headers to a response
-  const response = successResponse(isHtmlForm, redirect, 'Form submitted.')
+  const response = successResponse(isHtmlForm, redirect, `Form submitted. TeamId: ${team.id}`)
   Object.entries(corsHeaders).forEach(([key, value]) => {
     response.headers.set(key, value)
   })
